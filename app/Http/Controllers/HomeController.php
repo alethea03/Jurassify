@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia; // Make sure to import Inertia
+use App\Http\Controllers\CreatureController;
 
 class HomeController extends Controller
 {
@@ -20,3 +21,6 @@ class HomeController extends Controller
         ]);
     }
 }
+
+// Ensure your root route uses the correct controller:
+Route::get('/', [CreatureController::class, 'index'])->name('home');

@@ -1,0 +1,4 @@
+cd "C:/Users/ADMIN/OneDrive/Documents/Coding Projects/Jurassify/Jurassify"
+npm run dev
+php artisan serve
+
