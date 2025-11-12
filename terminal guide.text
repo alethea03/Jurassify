@@ -6,4 +6,4 @@ php artisan serve
 git add .
 git status
 git commit -m "FEAT: Implement scroll-triggered portal modal and new sections (Pitch, Visual Break)"
-git push origin main
+git push origin main    
