@@ -2,3 +2,8 @@ cd "C:/Users/ADMIN/OneDrive/Documents/Coding Projects/Jurassify/Jurassify"
 npm run dev
 php artisan serve
 
+
+git add .
+git status
+git commit -m "FEAT: Implement scroll-triggered portal modal and new sections (Pitch, Visual Break)"
+git push origin main

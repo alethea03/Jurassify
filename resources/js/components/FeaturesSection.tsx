@@ -10,11 +10,45 @@ interface Feature {
 const featureItems: Feature[] = [
     // Ensure you have at least one item here
     { 
-        title: "3D Interactive Models", 
-        description: "Engage with accurate, rotating models.",
-        icon: "🦕"
+        title: "Interactive Geological Timeline", 
+        description: "An engaging, scrollable timeline that dynamically highlights the Triassic, Jurassic, and Cretaceous periods, transitioning the main content or background visuals as the user scrolls.",
+        icon: "⏳"
     },
-    // ... rest of your feature items ...
+    { 
+        title: "3D Creature Modeling", 
+        description: "A placeholder feature that promises highly detailed, scientifically accurate 3D models of select creatures, allowing users to rotate and zoom for deep study.",
+        icon: "🌀"
+    },
+    { 
+        title: "Personal Research Dashboard", 
+        description: "A private, dedicated user area accessible only after sign-up/login where users can manage their personal content.",
+        icon: "👤"
+    },
+    { 
+        title: "Creature Favorites List", 
+        description: "Allows authenticated users to click a star or heart icon on any creature profile to save it to their dashboard for quick access.",
+        icon: "⭐"
+    },
+    { 
+        title: "Private Research Notes", 
+        description: "The ability for users to write, modify, save, and delete personal notes about any dinosaur they are studying, saved privately to their profile.",
+        icon: "📝"
+    },
+    { 
+        title: "Taxonomy and Filter Engine", 
+        description: "The advanced filtering system allowing users to quickly sort creatures by era, diet, size, and custom categories (Pterosaurs, Crocodilians, etc.).",
+        icon: "🔬"
+    },
+    { 
+        title: "Global Discovery Map", 
+        description: "An interactive map that pinpoints the real-world discovery sites of the creatures you are showcasing.",
+        icon: "🌎"
+    },
+    { 
+        title: "High-Contrast Dark Mode", 
+        description: "A feature allowing users to seamlessly switch the entire UI to a preferred theme for optimal viewing in different environments.",
+        icon: "🌙"
+    },
 ];
 
 const FeaturesSection: React.FC = () => {
