@@ -1,18 +1,24 @@
 import js from '@eslint/js';
-import prettier from 'eslint-config-prettier/flat';
+import typescriptPlugin from '@typescript-eslint/eslint-plugin';
+import prettier from 'eslint-config-prettier';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
-import typescript from 'typescript-eslint';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
+    // Base JavaScript recommended rules
     js.configs.recommended,
-    reactHooks.configs.flat.recommended,
-    ...typescript.configs.recommended,
+
+    // React Hooks rules
+    reactHooks.configs.recommended,
+
+    // TypeScript rules
+    typescriptPlugin.configs.recommended,
+
+    // React rules
     {
-        ...react.configs.flat.recommended,
-        ...react.configs.flat['jsx-runtime'], // Required for React 17+
+        ...react.configs.recommended,
         languageOptions: {
             globals: {
                 ...globals.browser,
@@ -29,8 +35,18 @@ export default [
             },
         },
     },
+
+    // Ignore unnecessary folders
     {
-        ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js'],
+        ignores: [
+            'vendor',
+            'node_modules',
+            'public',
+            'bootstrap/ssr',
+            'tailwind.config.js',
+        ],
     },
-    prettier, // Turn off all rules that might conflict with Prettier
+
+    // Prettier recommended rules
+    prettier.configs.recommended,
 ];

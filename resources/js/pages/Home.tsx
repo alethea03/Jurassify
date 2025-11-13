@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
 import { Head } from '@inertiajs/react';
+import { useEffect, useRef, useState } from 'react';
 
-import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
-import PitchIntroSection from '@/components/PitchIntroSection';
+import HeroSection from '@/components/HeroSection';
 import ImgBreakSection from '@/components/ImgBreakSection';
+import PitchIntroSection from '@/components/PitchIntroSection';
 import TimelineSection from '@/components/TimelineSection';
-import { Pi } from 'lucide-react';
 
 interface HomeProps {
     auth: { user: any | null };
@@ -15,7 +14,12 @@ interface HomeProps {
     creatures: any[];
 }
 
-export default function Home({ auth, canLogin, canRegister, creatures }: HomeProps) {
+export default function Home({
+    auth,
+    canLogin,
+    canRegister,
+    creatures,
+}: HomeProps) {
     // Scroll to top on mount
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -29,7 +33,7 @@ export default function Home({ auth, canLogin, canRegister, creatures }: HomePro
     const timelineRef = useRef<HTMLDivElement>(null);
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white font-sans antialiased">
+        <div className="min-h-screen bg-gray-900 font-sans text-white antialiased">
             <Head title="Jurassify" />
 
             {/* 1. HERO */}
@@ -55,4 +59,3 @@ export default function Home({ auth, canLogin, canRegister, creatures }: HomePro
         </div>
     );
 }
-
