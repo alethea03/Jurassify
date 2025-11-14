@@ -88,7 +88,7 @@ const FeaturesSection: React.FC = () => {
         <section id="features-section" className="bg-gray-900 py-20 text-white">
             <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
                 <h2 className="mb-8 text-5xl font-extrabold tracking-tight text-amber-400 drop-shadow-[0_3px_10px_rgba(255,200,0,0.6)]">
-                    Why Choose The Eon?
+                    Jurassify Your Experience
                 </h2>
 
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
