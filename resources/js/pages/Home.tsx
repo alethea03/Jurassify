@@ -6,6 +6,8 @@ import HeroSection from '@/components/HeroSection';
 import ImgBreakSection from '@/components/ImgBreakSection';
 import PitchIntroSection from '@/components/PitchIntroSection';
 import TimelineSection from '@/components/TimelineSection';
+import VideoSplash from '@/components/VideoSplash';
+
 
 interface HomeProps {
     auth: { user: any | null };
@@ -25,6 +27,13 @@ export default function Home({
         window.scrollTo(0, 0);
     }, []);
 
+    const [showSplash, setShowSplash] = useState(true); //video splash control for visibility
+
+    // Function to hide the splash screen and reveal the Hero Section
+    const handleVideoEnd = () => {
+        setShowSplash(false);
+    };
+
     // Control the welcome portal visibility (shown on first load)
     const [showPortal, setShowPortal] = useState(true);
     const handleClosePortal = () => setShowPortal(false);
@@ -36,26 +45,29 @@ export default function Home({
         <div className="min-h-screen bg-gray-900 font-sans text-white antialiased">
             <Head title="Jurassify" />
 
-            {/* 1. HERO */}
-            <HeroSection />
+            {/* 1. VIDEO SPLASH SCREEN (Renders first if showSplash is true) */}
+         {showSplash && <VideoSplash onVideoEnd={handleVideoEnd} />}
+          
 
-            {/* 2. PITCH INTRO */}
-            <PitchIntroSection />
+            {/* We apply a transition here to fade the content in dramatically */}
+           <div 
+                className={`transition-opacity duration-1000 ${showSplash ? 'opacity-0' : 'opacity-100'}`}
+            >
 
-            {/* 3. FEATURES */}
-            <FeaturesSection />
+                <HeroSection /> 
+                <PitchIntroSection />
+                <FeaturesSection /> 
+                <ImgBreakSection />
 
-            {/* 4. VISUAL BREAK */}
-            <ImgBreakSection />
-
-            {/* 5. TIMELINE */}
-            <div ref={timelineRef}>
-                <TimelineSection
-                    creatures={creatures}
-                    showPortal={showPortal}
-                    onClosePortal={handleClosePortal}
-                />
+                <div ref={timelineRef}>
+                    <TimelineSection 
+                        creatures={creatures}
+                        showPortal={showPortal}
+                        onClosePortal={handleClosePortal}
+                    /> 
+                </div>
             </div>
         </div>
     );
 }
+

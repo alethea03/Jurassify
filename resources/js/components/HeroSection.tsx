@@ -1,4 +1,8 @@
+import React, { useRef, useEffect, useState } from 'react';
+
 const AMBER_COLOR = 'bg-[#F5B041] hover:bg-[#D4983A]';
+
+    const VIDEO_PATH = 'dinosaur intro.mp4';
 
 export default function HeroSection() {
     const groupName = 'THE ARK COLLECTIVE';
@@ -7,18 +11,56 @@ export default function HeroSection() {
     const signupbtn = 'Sign Up';
     const cta = 'Become a Time Traveler';
     const teamNames = 'Alethea • Reo • Kristel';
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [muted, setMuted] = useState(true);
+
+    // --- Autoplay and Loop Logic ---
+    useEffect(() => {
+        const video = videoRef.current;
+        if (video) {
+            // Attempt to play on mount (must be muted for autoplay to work in browsers)
+            video.play().catch(error => {
+                console.error("Video background playback failed:", error);
+                // No fallback needed; if it fails, the section just shows the static background/text.
+            });
+        }
+    }, []);
+
+    const toggleMute = () => {
+        if (videoRef.current) {
+            videoRef.current.muted = !videoRef.current.muted;
+            setMuted(videoRef.current.muted);
+        }
+    };
 
     return (
         <header className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gray-900 text-center text-white">
-            {/* 1. Background Image Container */}
-            <div
-                className="absolute inset-0 bg-cover bg-center opacity-30"
-                style={{
-                    backgroundImage: "url('/images/hero-bg.jpg')",
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                }}
-            />
+
+            {/* 1. VIDEO BACKGROUND LAYER (Absolute & Behind) */}
+            <video 
+                ref={videoRef}
+                className="absolute inset-0 w-full h-full object-cover z-0" 
+                muted={muted}
+                loop // CRITICAL: This makes the video repeat continuously
+                autoPlay 
+                playsInline
+            >
+                <source src={VIDEO_PATH} type="video/mp4" />
+            </video>
+
+            {/* 2. OVERLAY TO DARKEN VIDEO (Enhances text readability) */}
+            <div className="absolute inset-0 z-10 bg-black/60"></div>
+            
+            {/* 4. MUTE/UNMUTE CONTROL (Placed on top of content) */}
+            <div className="absolute bottom-8 right-8 z-30">
+                <button 
+                    onClick={toggleMute}
+                    className="p-3 bg-gray-900/70 text-white rounded-full hover:bg-gray-700 transition"
+                    title={muted ? "Unmute Audio" : "Mute Audio"}
+                >
+                    {muted ? '🔇' : '🔊'} 
+                </button>
+            </div>
 
             {/* 2. Top Navigation Layer */}
             <nav className="absolute inset-x-0 top-0 z-20 p-8">
