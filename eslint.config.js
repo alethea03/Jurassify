@@ -1,24 +1,19 @@
 import js from '@eslint/js';
-import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import prettier from 'eslint-config-prettier';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 
-/** @type {import('eslint').Linter.Config[]} */
+/** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
-    // Base JavaScript recommended rules
     js.configs.recommended,
 
-    // React Hooks rules
-    reactHooks.configs.recommended,
-
-    // TypeScript rules
-    typescriptPlugin.configs.recommended,
-
-    // React rules
+    // React plugin rules
     {
-        ...react.configs.recommended,
+        plugins: {
+            react,
+            'react-hooks': reactHooks,
+        },
         languageOptions: {
             globals: {
                 ...globals.browser,
@@ -28,6 +23,8 @@ export default [
             'react/react-in-jsx-scope': 'off',
             'react/prop-types': 'off',
             'react/no-unescaped-entities': 'off',
+            'react-hooks/rules-of-hooks': 'error',
+            'react-hooks/exhaustive-deps': 'warn',
         },
         settings: {
             react: {
@@ -36,7 +33,7 @@ export default [
         },
     },
 
-    // Ignore unnecessary folders
+    // Ignore files/folders
     {
         ignores: [
             'vendor',
@@ -47,6 +44,6 @@ export default [
         ],
     },
 
-    // Prettier recommended rules
-    prettier.configs.recommended,
+    // Prettier integration
+    prettier,
 ];

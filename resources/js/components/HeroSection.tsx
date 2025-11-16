@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const AMBER_COLOR = 'bg-[#F5B041] hover:bg-[#D4983A]';
 
-    const VIDEO_PATH = 'dinosaur intro.mp4';
+const VIDEO_PATH = 'dinosaur intro.mp4';
 
 export default function HeroSection() {
     const groupName = 'THE ARK COLLECTIVE';
@@ -19,8 +19,8 @@ export default function HeroSection() {
         const video = videoRef.current;
         if (video) {
             // Attempt to play on mount (must be muted for autoplay to work in browsers)
-            video.play().catch(error => {
-                console.error("Video background playback failed:", error);
+            video.play().catch((error) => {
+                console.error('Video background playback failed:', error);
                 // No fallback needed; if it fails, the section just shows the static background/text.
             });
         }
@@ -35,14 +35,13 @@ export default function HeroSection() {
 
     return (
         <header className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gray-900 text-center text-white">
-
             {/* 1. VIDEO BACKGROUND LAYER (Absolute & Behind) */}
-            <video 
+            <video
                 ref={videoRef}
-                className="absolute inset-0 w-full h-full object-cover z-0" 
+                className="absolute inset-0 z-0 h-full w-full object-cover"
                 muted={muted}
                 loop // CRITICAL: This makes the video repeat continuously
-                autoPlay 
+                autoPlay
                 playsInline
             >
                 <source src={VIDEO_PATH} type="video/mp4" />
@@ -50,15 +49,15 @@ export default function HeroSection() {
 
             {/* 2. OVERLAY TO DARKEN VIDEO (Enhances text readability) */}
             <div className="absolute inset-0 z-10 bg-black/60"></div>
-            
+
             {/* 4. MUTE/UNMUTE CONTROL (Placed on top of content) */}
             <div className="absolute bottom-8 right-8 z-30">
-                <button 
+                <button
                     onClick={toggleMute}
-                    className="p-3 bg-gray-900/70 text-white rounded-full hover:bg-gray-700 transition"
-                    title={muted ? "Unmute Audio" : "Mute Audio"}
+                    className="rounded-full bg-gray-900/70 p-3 text-white transition hover:bg-gray-700"
+                    title={muted ? 'Unmute Audio' : 'Mute Audio'}
                 >
-                    {muted ? '🔇' : '🔊'} 
+                    {muted ? '🔇' : '🔊'}
                 </button>
             </div>
 
