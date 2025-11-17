@@ -1,0 +1,46 @@
+export interface Creature {
+  id: number;
+  name: string;
+  era: string;
+  diet: string;
+  description_short: string;
+  category: string;
+  location_map_coord: { lat: number; lng: number };
+  image_url: string;
+}
+
+// Simulate fetching data from an API
+export const fetchDinosaurs = async (): Promise<Creature[]> => {
+  return [
+    {
+      id: 1,
+      name: 'Tyrannosaurus Rex',
+      era: 'Cretaceous',
+      diet: 'Carnivore',
+      description_short: 'One of the largest land predators ever.',
+      category: 'DINOSAURS',
+      location_map_coord: { lat: 40.7128, lng: -74.006 },
+      image_url: '/images/trex.avif',
+    },
+    {
+      id: 2,
+      name: 'Triceratops',
+      era: 'Cretaceous',
+      diet: 'Herbivore',
+      description_short: 'Famous three-horned dinosaur.',
+      category: 'DINOSAURS',
+      location_map_coord: { lat: 34.0522, lng: -118.2437 },
+      image_url: '/images/triceratops.avif',
+    },
+    {
+      id: 3,
+      name: 'Pteranodon',
+      era: 'Cretaceous',
+      diet: 'Piscivore',
+      description_short: 'Flying reptile with a large wingspan.',
+      category: 'PTEROSAURS',
+      location_map_coord: { lat: 51.5074, lng: -0.1278 },
+      image_url: '/images/pteranodon.avif',
+    },
+  ];
+};

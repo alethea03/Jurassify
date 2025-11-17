@@ -1,107 +1,160 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import TimelineMap from "./TimelineMap";
+import { motion } from "framer-motion";
 
-// Define the interface again (ensure it matches DinosaurService data)
-interface Creature {
-    id: number;
-    name: string;
-    era: string;
-    diet: string;
-    description_short: string;
-    category: string;
-    location_map_coord: { lat: number; lng: number };
-    image_url: string;
-}
-interface ShowcaseProps {
-    creatures: Creature[];
-    //Prop to tell the component when to show the portal
-    showPortal: boolean;
-    // Prop to handle the user clicking "Got It"
-    onClosePortal: () => void;
+interface Dino {
+  _id: string;
+  name: string;
+  period: string;
+  type: string;
+  diet: string;
+  description: string;
+  image: string;
+  lat: number;
+  lng: number;
 }
 
-const TimelineSection: React.FC<ShowcaseProps> = ({
-    creatures,
-    showPortal,
-    onClosePortal,
-}) => {
-    // --- STATE MANAGEMENT ---
-    const [mapOpacity, setMapOpacity] = React.useState('opacity-0');
+const TimelineSection: React.FC = () => {
+  const [dinos, setDinos] = useState<Dino[]>([]);
+  const [selectedDino, setSelectedDino] = useState<Dino | null>(null);
+  const [selectedEra, setSelectedEra] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("ALL");
 
-    // Placeholder for filter and selected creature state
-    React.useEffect(() => {
-        // If showPortal is FALSE, it means the parent component (Home.tsx)
-        // has received the "Got It" signal.
-        if (!showPortal) {
-            // Add a small delay for the modal fade-out transition (500ms)
-            const timer = setTimeout(() => {
-                setMapOpacity('opacity-100'); // Fully reveal the map content
-            }, 500);
-            return () => clearTimeout(timer);
-        }
-    }, [showPortal]); // Run this effect when showPortal state changes
+  const eras = ["All", "Triassic", "Jurassic", "Cretaceous"];
+  const categories = ["ALL", "DINOSAURS", "PTEROSAURS", "CROCODILIANS", "TURTLES AND TORTOISES"];
+  const placeholderImage = "/images/dinos/placeholder.jpg";
 
-    // Placeholder for filter and selected creature state
-    const filterCategories = [
-        'DINOSAURS',
-        'PTEROSAURS',
-        'CROCODILIANS',
-        'TURTLES AND TORTOISES',
-        // ... rest of categories
-    ];
-    const [selectedCategory, setSelectedCategory] =
-        React.useState('PTEROSAURS');
-    const [selectedCreature, setSelectedCreature] = React.useState(
-        creatures.find((c) => c.category === selectedCategory) || creatures[0],
-    );
+  useEffect(() => {
+    fetch("/data/dinosaurs.json")
+      .then((res) => res.json())
+      .then((data) => {
+        const mapped = data.map((d: any) => {
+          // Normalize image paths
+          let filename =
+            d.id <= 30
+              ? `${d.id === 1 ? "trex" : d.name.toLowerCase().replace(/\s+/g, "")}.jpg`
+              : d.image;
 
-    // Keep selectedCreature in sync when the selectedCategory or creatures list changes
-    React.useEffect(() => {
-        const found = creatures.find((c) => c.category === selectedCategory);
-        setSelectedCreature(found || creatures[0] || (null as any));
-    }, [selectedCategory, creatures]);
+          if (!filename.startsWith("/")) filename = `/images/dinos/${filename}`;
 
-    // --- RENDER ---
-    return (
-        // The parent section MUST have 'relative' positioning for the overlay to work correctly.
-        <section className="relative min-h-screen bg-gray-900 text-white">
-            {/* 1. WELCOME OVERLAY MODAL */}
-            {showPortal && (
-                <div
-                    // CRITICAL FIX: Change 'fixed' to 'absolute'.
-                    // This confines the overlay to the boundaries of the parent 'relative' section.
-                    className={`absolute inset-0 z-50 flex items-center justify-center bg-black transition-opacity duration-500 ${showPortal ? 'opacity-100' : 'opacity-0'}`}
-                >
-                    <div className="max-w-3xl rounded-xl border-4 border-green-500 bg-gray-800/90 p-10 text-center shadow-2xl">
-                        <p className="text-2xl font-light leading-relaxed text-gray-200">
-                            You have successfully transported to the Mesozoic
-                            Era. <br />
-                            Brace yourself as you explore the ancient world and
-                            exit the portal with newly found knowledge and
-                            virtual experience.
-                        </p>
+          return {
+            _id: d.id.toString(),
+            name: d.name,
+            period: d.period,
+            type: d.type,
+            diet: d.diet,
+            description: d.description,
+            image: filename || placeholderImage,
+            lat: d.lat || 0,
+            lng: d.lng || 0,
+          };
+        });
+        setDinos(mapped);
+      })
+      .catch((err) => console.error("Failed to load dinos:", err));
+  }, []);
 
-                        <button
-                            onClick={onClosePortal}
-                            className="mt-8 transform rounded-lg bg-yellow-500 px-10 py-3 text-xl font-bold transition duration-300 hover:scale-105 hover:bg-yellow-600"
-                        >
-                            Got It
-                        </button>
-                    </div>
-                </div>
-            )}
+  const mapTypeToCategory = (type: string) => {
+    if (!type) return "DINOSAURS";
+    const t = type.toLowerCase();
+    if (t.includes("pterosaur")) return "PTEROSAURS";
+    if (t.includes("croc")) return "CROCODILIANS";
+    if (t.includes("turtle") || t.includes("tortoise")) return "TURTLES AND TORTOISES";
+    return "DINOSAURS";
+  };
 
-            {/* 2. MAIN SHOWCASE CONTENT (Map/Sidebar) */}
-            <div
-                className={`flex transition-opacity duration-1000 ${mapOpacity}`}
-            >
-                {/* Left Sidebar (Filters/Navigation) */}
-                {/* ... */}
+  const filteredDinos = dinos.filter((dino) => {
+    const dinoCategory = mapTypeToCategory(dino.type);
+    const dinoEra = (dino.period || "").toLowerCase();
 
-                {/* Right Content Area (Map and Detail Card) */}
-                {/* ... */}
+    const matchCategory =
+      selectedCategory.toUpperCase() === "ALL" || dinoCategory === selectedCategory.toUpperCase();
+    const matchEra = selectedEra.toLowerCase() === "all" || dinoEra.includes(selectedEra.toLowerCase());
+
+    return matchCategory && matchEra;
+  });
+
+  return (
+    <section className="flex min-h-screen bg-gray-900 text-white p-6">
+      <aside className="w-1/4 space-y-6">
+        <div>
+          <h3 className="text-xl font-bold mb-2">Filter by Era</h3>
+          <div className="flex flex-col gap-3">
+            {eras.map((era) => (
+              <motion.button
+                key={era}
+                onClick={() => setSelectedEra(era)}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                className={`py-3 px-6 rounded-full font-semibold text-white shadow-md
+                  ${
+                    selectedEra === era
+                      ? "bg-gradient-to-r from-green-400 to-green-600 shadow-lg"
+                      : "bg-gray-700 hover:bg-gradient-to-r hover:from-green-400 hover:to-green-600 hover:shadow-xl"
+                  }`}
+              >
+                {era}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-xl font-bold mb-2">Filter by Category</h3>
+          <div className="flex flex-col gap-3">
+            {categories.map((cat) => (
+              <motion.button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                className={`py-3 px-6 rounded-full font-semibold text-white shadow-md
+                  ${
+                    selectedCategory === cat
+                      ? "bg-gradient-to-r from-yellow-400 to-yellow-600 shadow-lg"
+                      : "bg-gray-700 hover:bg-gradient-to-r hover:from-yellow-400 hover:to-yellow-600 hover:shadow-xl"
+                  }`}
+              >
+                {cat}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <div className="flex-1 relative">
+        <div className="bg-gray-800 rounded-2xl shadow-2xl border-4 border-gradient-to-r from-green-400 to-blue-500 overflow-hidden h-[80vh] relative z-0">
+          <TimelineMap dinos={filteredDinos} onMarkerClick={(dino) => setSelectedDino(dino)} />
+        </div>
+
+        {selectedDino && (
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 w-11/12 md:w-1/3 p-6 bg-gray-800 rounded-xl shadow-2xl border border-green-500">
+            <div className="flex justify-between items-start">
+              <h2 className="text-2xl font-bold">{selectedDino.name}</h2>
+              <button
+                onClick={() => setSelectedDino(null)}
+                className="text-white font-bold text-xl hover:text-red-500"
+              >
+                ×
+              </button>
             </div>
-        </section>
-    );
+            <p><span className="font-semibold">Period:</span> {selectedDino.period}</p>
+            <p><span className="font-semibold">Type:</span> {selectedDino.type}</p>
+            <p><span className="font-semibold">Diet:</span> {selectedDino.diet}</p>
+            <p className="mt-2">{selectedDino.description}</p>
+            <img
+              src={selectedDino.image}
+              alt={selectedDino.name}
+              onError={(e) => ((e.target as HTMLImageElement).src = placeholderImage)}
+              className="w-full mt-4 rounded-lg"
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default TimelineSection;
