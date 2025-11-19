@@ -53,7 +53,6 @@ export default function Home({
            <div 
                 className={`transition-opacity duration-1000 ${showSplash ? 'opacity-0' : 'opacity-100'}`}
             >
-
                 <HeroSection /> 
                 <PitchIntroSection />
                 <FeaturesSection /> 
