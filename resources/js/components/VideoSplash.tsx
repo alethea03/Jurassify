@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface VideoSplashProps {
-    onVideoEnd: () => void; 
+    onVideoEnd: () => void;
 }
 
 export default function VideoSplash({ onVideoEnd }: VideoSplashProps) {
@@ -12,10 +12,10 @@ export default function VideoSplash({ onVideoEnd }: VideoSplashProps) {
     // --- Autoplay and End Logic ---
     useEffect(() => {
         const video = videoRef.current;
-        if (video) { 
+        if (video) {
             // 1. Force playback on mount (will work because it's initially muted)
-            video.play().catch(error => {
-                console.error("Autoplay blocked until user interacts.", error);
+            video.play().catch((error) => {
+                console.error('Autoplay blocked until user interacts.', error);
                 // Fallback: Immediately call onVideoEnd if playback fails (e.g., mobile)
             });
 
@@ -40,12 +40,11 @@ export default function VideoSplash({ onVideoEnd }: VideoSplashProps) {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] bg-black flex items-center justify-center">
-            
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black">
             {/* Video Element */}
-            <video 
+            <video
                 ref={videoRef}
-                className="w-full h-full object-cover" 
+                className="h-full w-full object-cover"
                 playsInline // Recommended for mobile
                 autoPlay
                 muted={muted}
@@ -53,23 +52,22 @@ export default function VideoSplash({ onVideoEnd }: VideoSplashProps) {
                 <source src={VIDEO_PATH} type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
-            
+
             {/* Control Bar (Always visible) */}
             <div className="absolute bottom-8 right-8 z-10 flex space-x-4">
-                
-            {/* Mute Button */}
-                <button 
+                {/* Mute Button */}
+                <button
                     onClick={toggleMute}
-                    className="p-3 bg-gray-900/70 text-white rounded-full hover:bg-gray-700 transition"
-                    title={muted ? "Unmute Audio" : "Mute Audio"}
+                    className="rounded-full bg-gray-900/70 p-3 text-white transition hover:bg-gray-700"
+                    title={muted ? 'Unmute Audio' : 'Mute Audio'}
                 >
                     {muted ? '🔇 Unmute' : '🔊 Mute'}
                 </button>
-                
+
                 {/* Skip Button */}
-                <button 
+                <button
                     onClick={handleSkip}
-                    className="p-3 bg-yellow-500/90 text-gray-900 font-bold rounded-full hover:bg-yellow-400 transition"
+                    className="rounded-full bg-yellow-500/90 p-3 font-bold text-gray-900 transition hover:bg-yellow-400"
                 >
                     Skip Intro
                 </button>

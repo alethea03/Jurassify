@@ -8,7 +8,6 @@ import PitchIntroSection from '@/components/PitchIntroSection';
 import TimelineSection from '@/components/TimelineSection';
 import VideoSplash from '@/components/VideoSplash';
 
-
 interface HomeProps {
     auth: { user: any | null };
     canLogin: boolean;
@@ -46,27 +45,29 @@ export default function Home({
             <Head title="Jurassify" />
 
             {/* 1. VIDEO SPLASH SCREEN (Renders first if showSplash is true) */}
-         {showSplash && <VideoSplash onVideoEnd={handleVideoEnd} />}
-          
+            {showSplash && <VideoSplash onVideoEnd={handleVideoEnd} />}
 
             {/* We apply a transition here to fade the content in dramatically */}
-           <div 
+            <div
                 className={`transition-opacity duration-1000 ${showSplash ? 'opacity-0' : 'opacity-100'}`}
             >
+<<<<<<< HEAD
                 <HeroSection /> 
+=======
+                <HeroSection />
+>>>>>>> d8c667517bca39244065bc334b1c0f0988a76b5c
                 <PitchIntroSection />
-                <FeaturesSection /> 
+                <FeaturesSection />
                 <ImgBreakSection />
 
                 <div ref={timelineRef}>
-                    <TimelineSection 
+                    <TimelineSection
                         creatures={creatures}
                         showPortal={showPortal}
                         onClosePortal={handleClosePortal}
-                    /> 
+                    />
                 </div>
             </div>
         </div>
     );
 }
-
