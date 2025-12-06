@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TimelineMap from "./TimelineMap";
 import { motion } from "framer-motion";
+import DinoCard from "./DinoCards"; 
 
 interface Dino {
   _id: string;
@@ -14,7 +15,14 @@ interface Dino {
   lng: number;
 }
 
-const TimelineSection: React.FC = () => {
+interface TimelineSectionProps {
+    creatures: Dino[]; // Assuming 'creatures' is the list of all dinos passed from Home.tsx
+    showPortal: boolean;
+    onClosePortal: () => void;
+}
+
+
+const TimelineSection: React.FC<TimelineSectionProps> = ({ creatures, showPortal, onClosePortal }) => {
   const [dinos, setDinos] = useState<Dino[]>([]);
   const [selectedDino, setSelectedDino] = useState<Dino | null>(null);
   const [selectedEra, setSelectedEra] = useState("All");
@@ -75,7 +83,7 @@ const TimelineSection: React.FC = () => {
   });
 
   return (
-    <section className="flex min-h-screen bg-gray-900 text-white p-6">
+    <section className="flex min-h-screen bg-gray-900 text-white p-6 gap-x-6" id="timeline">
       <aside className="w-1/4 space-y-6">
         <div>
           <h3 className="text-xl font-bold mb-2">Filter by Era</h3>
@@ -130,27 +138,18 @@ const TimelineSection: React.FC = () => {
         </div>
 
         {selectedDino && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 w-11/12 md:w-1/3 p-6 bg-gray-800 rounded-xl shadow-2xl border border-green-500">
-            <div className="flex justify-between items-start">
-              <h2 className="text-2xl font-bold">{selectedDino.name}</h2>
-              <button
-                onClick={() => setSelectedDino(null)}
-                className="text-white font-bold text-xl hover:text-red-500"
-              >
-                ×
-              </button>
-            </div>
-            <p><span className="font-semibold">Period:</span> {selectedDino.period}</p>
-            <p><span className="font-semibold">Type:</span> {selectedDino.type}</p>
-            <p><span className="font-semibold">Diet:</span> {selectedDino.diet}</p>
-            <p className="mt-2">{selectedDino.description}</p>
-            <img
-              src={selectedDino.image}
-              alt={selectedDino.name}
-              onError={(e) => ((e.target as HTMLImageElement).src = placeholderImage)}
-              className="w-full mt-4 rounded-lg"
-            />
-          </div>
+          <motion.div 
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 50 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 w-11/12 md:w-1/3"
+                    >
+                      <DinoCard 
+                            dino={selectedDino} 
+                            onClose={() => setSelectedDino(null)} // Passes the function to close the card
+                        />
+                    </motion.div>
         )}
       </div>
     </section>

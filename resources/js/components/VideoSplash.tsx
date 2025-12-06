@@ -48,6 +48,7 @@ export default function VideoSplash({ onVideoEnd }: VideoSplashProps) {
                 playsInline // Recommended for mobile
                 autoPlay
                 muted={muted}
+                onError={(e) => console.error('Video failed to load', e)}
             >
                 <source src={VIDEO_PATH} type="video/mp4" />
                 Your browser does not support the video tag.

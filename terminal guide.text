@@ -8,3 +8,26 @@ git status
 git commit -m "FEAT: Create Video Splash Intro and Video Background"
 git push origin main    
 
+{ APACHE }
+
+php artisan migrate (this is to create the users table)
+http://localhost/phpmyadmin
+
+{ *** }
+composer require laravel/breeze --dev
+php artisan breeze:install react
+php artisan migrate 
+
+{ DELETE AUTOLOAD_REAL.php from vendor }
+rm -r vendor
+del composer.lock
+composer install (re-install php dependencies)
+composer dump-autoload (if it errors again)
+
+-- redo *** ---
+
+php artisan route:clear
+php artisan config:clear
+php artisan cache:clear
+php artisan serve
+

@@ -1,0 +1,16 @@
+SELECT adminId, name, username, created_at, updated_at
+FROM mockAdmin;
+
+SELECT *
+FROM mockAdmin
+WHERE username = 'admin'
+LIMIT 1;
+
+UPDATE mockAdmin
+SET
+  name = 'Updated Admin',
+  password = 'newpassword123'
+WHERE adminId = 1;
+
+DELETE FROM mockAdmin
+WHERE adminId = 1;

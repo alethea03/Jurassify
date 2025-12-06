@@ -1,15 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
+import { FaUserPlus, FaArrowRight } from 'react-icons/fa';
 
 const AMBER_COLOR = 'bg-[#F5B041] hover:bg-[#D4983A]';
 
 const VIDEO_PATH = 'dinosaur intro.mp4';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+    isLoggedIn: boolean;
+    username: string | undefined;
+    onMainAction: () => void;
+}
+
+export default function HeroSection({ isLoggedIn, username, onMainAction }: HeroSectionProps) {
     const groupName = 'THE ARK COLLECTIVE';
     const title = 'JURASSIFY';
     const tagline = 'Your Virtual Time Machine to Prehistoric Life.';
-    const signupbtn = 'Sign Up';
-    const cta = 'Become a Time Traveler';
     const teamNames = 'Alethea • Reo • Kristel';
     const videoRef = useRef<HTMLVideoElement>(null);
     const [muted, setMuted] = useState(true);
@@ -64,7 +69,6 @@ export default function HeroSection() {
             {/* 2. Top Navigation Layer */}
             <nav className="absolute inset-x-0 top-0 z-20 p-8">
                 <div className="flex items-center justify-between">
-                    {/* 🔥 TOP LEFT: Group Name + Team Members */}
                     <div className="text-left">
                         <span className="animate-pulse-slow block bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-600 bg-clip-text text-2xl font-extrabold uppercase tracking-[0.25em] text-transparent drop-shadow-[0_2px_5px_rgba(255,200,0,0.6)]">
                             {groupName}
@@ -80,13 +84,6 @@ export default function HeroSection() {
                             {teamNames}
                         </span>
                     </div>
-
-                    {/* 🔘 TOP RIGHT: Sign Up Button */}
-                    <button
-                        className={`transform rounded-xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 px-6 py-3 text-lg font-bold text-gray-900 shadow-lg shadow-yellow-500/50 transition duration-300 hover:scale-105 hover:from-amber-300 hover:to-yellow-400 hover:shadow-2xl active:scale-95 active:shadow-inner`}
-                    >
-                        {signupbtn}
-                    </button>
                 </div>
             </nav>
 
@@ -117,8 +114,9 @@ export default function HeroSection() {
                 <div className="flex justify-center space-x-6">
                     <button
                         className={`transform rounded-full bg-gradient-to-r from-green-400 to-teal-400 px-12 py-4 text-xl font-semibold text-gray-900 shadow-lg shadow-teal-400/40 transition duration-300 hover:scale-105 hover:from-green-300 hover:to-teal-300 hover:shadow-2xl active:scale-95 active:shadow-inner`}
-                    >
-                        {cta}
+                    onClick={onMainAction}
+                >
+                    {isLoggedIn ? 'Go to Hub' : 'Become a Time Traveler'} 
                     </button>
                 </div>
             </div>

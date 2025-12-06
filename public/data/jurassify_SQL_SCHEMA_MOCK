@@ -1,0 +1,66 @@
+-- 1) Create database and use it
+CREATE DATABASE IF NOT EXISTS jurassify_mock
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE jurassify_mock;
+
+-- 2) mockUsers table
+CREATE TABLE mockUsers (
+  userId     INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name       VARCHAR(100) NOT NULL,
+  username   VARCHAR(50)  NOT NULL UNIQUE,
+  password   VARCHAR(255) NOT NULL,  -- store hashed passwords later
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 3) mockAdmin table
+CREATE TABLE mockAdmin (
+  adminId    INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name       VARCHAR(100) NOT NULL,
+  username   VARCHAR(50)  NOT NULL UNIQUE,
+  password   VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 4) mockFavorites table
+CREATE TABLE mockFavorites (
+  favoritesId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  userId      INT UNSIGNED NOT NULL,
+  userName    VARCHAR(100) NOT NULL,       -- denormalized from mockUsers.name
+  dinoId      VARCHAR(64) NOT NULL,        -- from dinosaurs.json _id
+  dinoName    VARCHAR(150) NOT NULL,       -- from dinosaurs.json name
+  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_favorites_user
+    FOREIGN KEY (userId) REFERENCES mockUsers(userId)
+    ON DELETE CASCADE
+);
+
+-- 5) mockNotes table
+CREATE TABLE mockNotes (
+  noteId      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  userId      INT UNSIGNED NOT NULL,
+  userName    VARCHAR(100) NOT NULL,       -- denormalized from mockUsers.name
+  favoritesId INT UNSIGNED NOT NULL,
+  notes       VARCHAR(255) NOT NULL,
+  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_notes_user
+    FOREIGN KEY (userId) REFERENCES mockUsers(userId)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_notes_favorite
+    FOREIGN KEY (favoritesId) REFERENCES mockFavorites(favoritesId)
+    ON DELETE CASCADE
+);
+
+INSERT INTO mockUsers (name, username, password) VALUES
+  ('Admin User', 'rootuser', 'rootpass123'),
+  ('Time Traveler', 'user1234', 'userpass123');
+
+INSERT INTO mockAdmin (name, username, password) VALUES
+  ('Super Admin', 'admin', 'adminpass123');
+
+INSERT INTO mockAdmin (name, username, password)
+VALUES ('New Admin', 'newadmin', 'newadminpass');

@@ -114,7 +114,7 @@ export default function TwoFactorChallenge() {
                                 <span>or you can </span>
                                 <button
                                     type="button"
-                                    className="text-foreground hover:decoration-current! cursor-pointer underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out dark:decoration-neutral-500"
+                                    className="text-foreground hover:decoration-current! cursor-pointer underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out"
                                     onClick={() =>
                                         toggleRecoveryMode(clearErrors)
                                     }
