@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import TimelineMap from "./TimelineMap";
 import { motion } from "framer-motion";
-import DinoCard from "./DinoCards"; 
+import DinoCard from "./DinoCards"; // <-- fixed import
+import { UserFavorite } from "@/hooks/useUser"; // <-- added to type favorites
 
 interface Dino {
   _id: string;
@@ -16,13 +17,26 @@ interface Dino {
 }
 
 interface TimelineSectionProps {
-    creatures: Dino[]; // Assuming 'creatures' is the list of all dinos passed from Home.tsx
+    creatures: any[];
     showPortal: boolean;
     onClosePortal: () => void;
+    isLoggedIn: boolean;
+    username?: string;
+    toggleFavorite: (dinoId: string, dinoName: string, dinoImage: string) => void;
+    addOrUpdateNote: (dinoFavorite: UserFavorite) => void;
+    favorites: UserFavorite[];
 }
 
-
-const TimelineSection: React.FC<TimelineSectionProps> = ({ creatures, showPortal, onClosePortal }) => {
+const TimelineSection: React.FC<TimelineSectionProps> = ({ 
+  creatures, 
+  showPortal, 
+  onClosePortal, 
+  isLoggedIn, 
+  username,
+  toggleFavorite,
+  addOrUpdateNote,
+  favorites
+}) => {
   const [dinos, setDinos] = useState<Dino[]>([]);
   const [selectedDino, setSelectedDino] = useState<Dino | null>(null);
   const [selectedEra, setSelectedEra] = useState("All");
@@ -37,7 +51,6 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ creatures, showPortal
       .then((res) => res.json())
       .then((data) => {
         const mapped = data.map((d: any) => {
-          // Normalize image paths
           let filename =
             d.id <= 30
               ? `${d.id === 1 ? "trex" : d.name.toLowerCase().replace(/\s+/g, "")}.jpg`
@@ -96,8 +109,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ creatures, showPortal
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 className={`py-3 px-6 rounded-full font-semibold text-white shadow-md
-                  ${
-                    selectedEra === era
+                  ${selectedEra === era
                       ? "bg-gradient-to-r from-green-400 to-green-600 shadow-lg"
                       : "bg-gray-700 hover:bg-gradient-to-r hover:from-green-400 hover:to-green-600 hover:shadow-xl"
                   }`}
@@ -119,8 +131,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ creatures, showPortal
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 className={`py-3 px-6 rounded-full font-semibold text-white shadow-md
-                  ${
-                    selectedCategory === cat
+                  ${selectedCategory === cat
                       ? "bg-gradient-to-r from-yellow-400 to-yellow-600 shadow-lg"
                       : "bg-gray-700 hover:bg-gradient-to-r hover:from-yellow-400 hover:to-yellow-600 hover:shadow-xl"
                   }`}
@@ -139,17 +150,22 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ creatures, showPortal
 
         {selectedDino && (
           <motion.div 
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 50 }}
-                        transition={{ duration: 0.3 }}
-                        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 w-11/12 md:w-1/3"
-                    >
-                      <DinoCard 
-                            dino={selectedDino} 
-                            onClose={() => setSelectedDino(null)} // Passes the function to close the card
-                        />
-                    </motion.div>
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.3 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 w-11/12 md:w-1/3"
+          >
+            <DinoCard 
+              dino={selectedDino} 
+              onClose={() => setSelectedDino(null)}
+              isLoggedIn={isLoggedIn} // <-- PASS login state
+              username={username}     // <-- optional, useful for notes
+              toggleFavorite={toggleFavorite} // <-- STEP 3: PASS toggleFavorite
+              favorites={favorites}
+              addOrUpdateNote={addOrUpdateNote}           // <-- STEP 3: PASS favorites
+            />
+          </motion.div>
         )}
       </div>
     </section>

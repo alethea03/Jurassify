@@ -89,12 +89,21 @@ export default function DevelopersSection({
                             >
                                 <div className={`flex ${isExpanded ? 'flex-col sm:flex-row' : 'flex-row'} items-start gap-6`} id="contributors">
                                     
-                                    {/* Profile Icon (Always Visible) */}
-                                    <div className="flex-shrink-0">
-                                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-2xl font-bold text-black border-2 border-white shadow-lg">
-                                            {iconText}
-                                        </div>
-                                    </div>
+{/* Profile Icon (Always Visible) */}
+<div className="flex-shrink-0">
+    <img 
+        src={
+            dev.name === 'Reo' ? '/reo.png' :
+            dev.name === 'Kristel Mae' ? '/kristel.png' :
+            dev.name === 'Alethea' ? '/alethea.png' :
+            '' // fallback if no image
+        } 
+        alt={dev.name} 
+        className="w-20 h-20 rounded-xl border-2 border-white shadow-lg object-cover"
+    />
+</div>
+
+
                                     
                                     {/* Main Compact Details */}
                                     <div className="flex-1 min-w-0">
