@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
+
 file_put_contents(storage_path('logs/web-routes-hit.log'), 'web.php loaded at '.now().PHP_EOL, FILE_APPEND);
 
 Route::get('/', function () {
@@ -47,4 +48,26 @@ Route::post('/mock-login', function (\Illuminate\Http\Request $request) {
     ]);
 });
 
+
+Route::get('/test-db', function () {
+    try {
+        DB::connection()->getPdo();
+        return 'SQLite connection works!';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
+
+
+Route::get('/story', function () {
+    return Inertia::render('pages/StoryPage'); 
+});
+
+
+
+
+Route::get('/dinogallery', function () {
+    return Inertia::render('DinoGalleryPage');
+});
 

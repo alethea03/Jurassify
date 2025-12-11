@@ -8,7 +8,7 @@ import {
     Star,
     User,
 } from 'lucide-react'; // ✅ imported icons
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface Feature {
     title: string;
@@ -84,9 +84,45 @@ const featureItems: Feature[] = [
 ];
 
 const FeaturesSection: React.FC = () => {
+    const splineRef = useRef<any>(null);
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (splineRef.current && splineRef.current.setCameraPosition) {
+                const x = (e.clientX / window.innerWidth - 0.5) * 2; // -1 to 1
+                const y = (e.clientY / window.innerHeight - 0.5) * 2; // -1 to 1
+                splineRef.current.setCameraPosition({ x: x * 2, y: y * 2, z: splineRef.current.camera.position.z });
+            }
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
     return (
-        <section id="features-section" className="bg-gray-900 py-20 text-white">
-            <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+        <section id="features-section" className="relative bg-gray-900 py-20 text-white overflow-hidden">
+         {/* Spline 3D Background */}
+<div className="absolute inset-0 z-0 pointer-events-none">
+    <spline-viewer
+        ref={splineRef}
+        url="https://prod.spline.design/gRAacXDSse1nIW-y/scene.splinecode"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 0,
+          pointerEvents: 'none', // so form inputs work
+    transform: 'scale(1.2)', // zoom in slightly
+    transformOrigin: 'center center',
+        }}
+    ></spline-viewer>
+</div>
+
+
+
+
+            <div className="relative z-10 mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
                 <h2 className="mb-8 text-5xl font-extrabold tracking-tight text-amber-400 drop-shadow-[0_3px_10px_rgba(255,200,0,0.6)]">
                     Jurassify Your Experience
                 </h2>

@@ -1,20 +1,36 @@
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { SharedData } from '@/types';
-import { usePage } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { AppShell } from './app-shell';
+import { AppContent } from './app-content';
+import StickyHeader from '@/components/StickyHeader';
+import SignupModal from '@/components/SignupModal';
+import HeroSection from '@/components/HeroSection';
 
-interface AppShellProps {
-    children: React.ReactNode;
-    variant?: 'header' | 'sidebar';
-}
+export default function MainPage() {
+  const [signupOpen, setSignupOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState<string | undefined>(undefined);
 
-export function AppShell({ children, variant = 'header' }: AppShellProps) {
-    const isOpen = usePage<SharedData>().props.sidebarOpen;
+  return (
+    <AppShell variant="header">
+      {/* Sticky Header */}
+      <StickyHeader
+        isLoggedIn={isLoggedIn}
+        username={username}
+        onMainAction={() => setSignupOpen(true)} // Open modal
+        onLogoClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      />
 
-    if (variant === 'header') {
-        return (
-            <div className="flex min-h-screen w-full flex-col">{children}</div>
-        );
-    }
+      {/* Signup Modal */}
+      <SignupModal
+        isOpen={signupOpen}
+        onClose={() => setSignupOpen(false)}
+      />
 
-    return <SidebarProvider defaultOpen={isOpen}>{children}</SidebarProvider>;
+      {/* Page Content */}
+      <AppContent>
+        <HeroSection />
+        {/* other sections */}
+      </AppContent>
+    </AppShell>
+  );
 }
