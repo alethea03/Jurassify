@@ -70,13 +70,18 @@ const TimelineMap: React.FC<TimelineMapProps> = ({ dinos, onMarkerClick }) => {
       />
       <ZoomControl position="bottomright" />
       {dinosWithOffsets.map((dino, idx) => (
-        <Marker
-          key={`${dino._id}-${idx}`}
-          position={[dino.offsetLat, dino.offsetLng]}
-          icon={getIconByDinoImage(dino.image || placeholderImage)}
-          eventHandlers={{ click: () => onMarkerClick(dino) }}
-        />
-      ))}
+  <Marker
+    key={`${dino._id}-${idx}`}
+    position={[dino.offsetLat, dino.offsetLng]}
+    icon={getIconByDinoImage(dino.image || placeholderImage)}
+    eventHandlers={{ click: () => onMarkerClick(dino) }}
+  >
+    <div style={{ fontSize: "12px", fontWeight: "bold" }}>
+      {dino.name}
+    </div>
+  </Marker>
+))}
+
     </MapContainer>
   );
 };
