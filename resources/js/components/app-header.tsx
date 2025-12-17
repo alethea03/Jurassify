@@ -1,12 +1,9 @@
+import { useState } from 'react';
+
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icon } from '@/components/icon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -26,7 +23,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { UserMenuContent } from '@/components/user-menu-content';
+import UserSidebar from '@/components/UserSidebar';
 import { useInitials } from '@/hooks/use-initials';
 import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
@@ -57,8 +54,7 @@ const rightNavItems: NavItem[] = [
     },
 ];
 
-const activeItemStyles =
-    'text-neutral-900';
+const activeItemStyles = 'text-neutral-900';
 
 interface AppHeaderProps {
     breadcrumbs?: BreadcrumbItem[];
@@ -68,6 +64,9 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const getInitials = useInitials();
+
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
     return (
         <>
             <div className="border-sidebar-border/80 border-b">
@@ -176,7 +175,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                             {item.title}
                                         </Link>
                                         {isSameUrl(page.url, item.href) && (
-                                            <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black"></div>
+                                            <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black" />
                                         )}
                                     </NavigationMenuItem>
                                 ))}
@@ -193,6 +192,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                             >
                                 <Search className="!size-5 opacity-80 group-hover:opacity-100" />
                             </Button>
+
                             <div className="hidden lg:flex">
                                 {rightNavItems.map((item) => (
                                     <TooltipProvider
@@ -205,11 +205,8 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                     href={resolveUrl(item.href)}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-accent-foreground ring-offset-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring group ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md bg-transparent p-0 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                                                    className="group ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md"
                                                 >
-                                                    <span className="sr-only">
-                                                        {item.title}
-                                                    </span>
                                                     {item.icon && (
                                                         <Icon
                                                             iconNode={item.icon}
@@ -226,30 +223,27 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 ))}
                             </div>
                         </div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    className="size-10 rounded-full p-1"
-                                >
-                                    <Avatar className="size-8 overflow-hidden rounded-full">
-                                        <AvatarImage
-                                            src={auth.user.avatar}
-                                            alt={auth.user.name}
-                                        />
-                                        <AvatarFallback className="rounded-lg bg-neutral-200 text-black">
-                                            {getInitials(auth.user.name)}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="end">
-                                <UserMenuContent user={auth.user} />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+
+                        {/* Avatar → Sidebar Trigger */}
+                        <Button
+                            variant="ghost"
+                            className="size-10 rounded-full p-1"
+                            onClick={() => setSidebarOpen(true)}
+                        >
+                            <Avatar className="size-8 overflow-hidden rounded-full">
+                                <AvatarImage
+                                    src={auth.user.avatar}
+                                    alt={auth.user.name}
+                                />
+                                <AvatarFallback className="rounded-lg bg-neutral-200 text-black">
+                                    {getInitials(auth.user.name)}
+                                </AvatarFallback>
+                            </Avatar>
+                        </Button>
                     </div>
                 </div>
             </div>
+
             {breadcrumbs.length > 1 && (
                 <div className="border-sidebar-border/70 flex w-full border-b">
                     <div className="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
@@ -257,6 +251,16 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     </div>
                 </div>
             )}
+
+            {/* User Sidebar */}
+            <UserSidebar
+                isOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+                user={auth.user}
+                onLogout={() => {
+                    window.location.href = '/logout';
+                }}
+            />
         </>
     );
 }

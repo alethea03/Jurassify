@@ -38,27 +38,26 @@ export default function PitchIntroSection() {
     },
   ];
 
- useEffect(() => {
-  if (!showStory) return;
+  useEffect(() => {
+    if (!showStory) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("fade-in");
-          observer.unobserve(entry.target); // animate once
-        }
-      });
-    },
-    { threshold: 0.2 } // 20% of element visible triggers animation
-  );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("fade-in");
+            observer.unobserve(entry.target); // animate once
+          }
+        });
+      },
+      { threshold: 0.2 } // 20% of element visible triggers animation
+    );
 
-  const sections = document.querySelectorAll(".fade-section");
-  sections.forEach((section) => observer.observe(section));
+    const sections = document.querySelectorAll(".fade-section");
+    sections.forEach((section) => observer.observe(section));
 
-  return () => observer.disconnect();
-}, [showStory]);
-
+    return () => observer.disconnect();
+  }, [showStory]);
 
   useEffect(() => {
     if (selectedImage) {
@@ -80,17 +79,14 @@ export default function PitchIntroSection() {
 
   return (
     <>
-      <section
-        className="relative min-h-screen p-6 flex flex-col items-center justify-center"
-        style={{ backgroundColor: "#111827" }}
-      >
+      <section className="relative min-h-screen p-6 flex flex-col items-center justify-center bg-white dark:bg-gray-900 transition-colors duration-500">
         {/* PITCH + NPC CONTAINER */}
         {!showStory && (
-          <div className="relative z-20 flex flex-col md:flex-row items-center bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-6 max-w-6xl">
+          <div className="relative z-20 flex flex-col md:flex-row items-center bg-white/10 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 dark:border-gray-600 rounded-3xl shadow-2xl p-6 max-w-6xl">
             {/* TEXT */}
-            <div className="flex-1 text-white text-sm md:text-base space-y-4">
+            <div className="flex-1 text-gray-900 dark:text-gray-100 text-sm md:text-base space-y-4">
               <p className="italic font-medium leading-snug">{pitchText}</p>
-              <div className="text-xs text-gray-300 font-semibold uppercase">
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase">
                 — From The Ark Collective
               </div>
               <p className="text-sm md:text-base">
@@ -98,7 +94,7 @@ export default function PitchIntroSection() {
                 <em>"Echoes of a Lost Age"</em>.
               </p>
               <button
-                className="mt-3 px-6 py-2 bg-green-500 text-white font-bold rounded-2xl shadow-lg hover:bg-green-600 transition text-sm md:text-base"
+                className="mt-3 px-6 py-2 bg-green-500 dark:bg-green-400 text-white dark:text-gray-900 font-bold rounded-2xl shadow-lg hover:bg-green-600 dark:hover:bg-green-500 transition text-sm md:text-base"
                 onClick={() => setShowStory(true)}
               >
                 Read the Story
@@ -109,7 +105,7 @@ export default function PitchIntroSection() {
               <img
                 src="/npc.png"
                 alt="NPC"
-                className="w-64 md:w-96 h-auto object-contain" // bigger full body
+                className="w-64 md:w-96 h-auto object-contain"
               />
             </div>
           </div>
@@ -122,59 +118,65 @@ export default function PitchIntroSection() {
               fadeOut ? "opacity-0" : "opacity-100"
             }`}
           >
-            <div className="relative z-20 w-full max-w-5xl bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-6 space-y-16 overflow-hidden mt-16">
+            <div className="relative z-20 w-full max-w-5xl bg-white/10 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-600 rounded-3xl shadow-2xl p-6 space-y-16 overflow-hidden mt-16">
               {/* STORY BACKGROUND */}
               <div className="absolute inset-0 z-0 rounded-3xl">
                 <div
                   className="absolute inset-0 bg-cover bg-center"
                   style={{ backgroundImage: "url('/long.png')", filter: "contrast(1.1)" }}
                 />
-                <div className="absolute inset-0 bg-black/70" />
+                <div className="absolute inset-0 bg-black/50" />
               </div>
 
-              {/* CINEMATIC HEADER */}
-              <div className="relative z-10 text-center mt-6 mb-6">
-                <h1
-                  className="tracking-[0.35em] text-2xl md:text-3xl font-bold text-white"
-                  style={{ fontFamily: "'Playfair Display', serif", textShadow: "2px 2px 6px rgba(0,0,0,0.5)" }}
-                >
-                  ECHOES&nbsp; OF&nbsp; A&nbsp; LOST&nbsp;AGE
-                </h1>
-                <p className="mt-2 text-sm md:text-base text-gray-300 italic">
-                  An ancient world on the edge of extinction…
-                </p>
-              </div>
+             {/* CINEMATIC HEADER */}
+<div className="relative z-10 text-center mt-6 mb-6">
+  <h1
+    className="tracking-[0.35em] text-2xl md:text-3xl font-bold text-white"
+    style={{ fontFamily: "'Playfair Display', serif", textShadow: "2px 2px 6px rgba(0,0,0,0.5)" }}
+  >
+    ECHOES&nbsp; OF&nbsp; A&nbsp; LOST&nbsp;AGE
+  </h1>
+  <p className="mt-2 text-sm md:text-base text-white italic">
+    An ancient world on the edge of extinction…
+  </p>
+</div>
 
               {/* STORY SECTIONS */}
-              {sections.map((s, index) => (
-                <div
-                  key={index}
-                  className="fade-section opacity-0 translate-y-12 transition-all duration-[1200ms] relative z-10"
-                >
-                  <div
-                    className={`flex flex-col md:flex-row items-center gap-8 ${
-                      index % 2 === 1 ? "md:flex-row-reverse" : ""
-                    }`}
-                  >
-                    <div className="flex-1">
-                      <h2 className="text-2xl md:text-3xl font-bold mb-4 text-[#FFF2CC]">{s.title}</h2>
-                      <p className="text-lg text-gray-200 leading-relaxed whitespace-pre-line">{s.text}</p>
-                    </div>
-                    <div className="flex-1 max-w-xs md:max-w-sm">
-                      <img
-                        src={s.img}
-                        className="rounded-xl shadow-2xl w-full cursor-pointer transition-transform duration-500 hover:scale-110 hover:-rotate-1"
-                        onClick={() => setSelectedImage(s.img)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
+{sections.map((s, index) => (
+  <div
+    key={index}
+    className="fade-section opacity-0 translate-y-12 transition-all duration-[1200ms] relative z-10"
+  >
+    <div
+      className={`flex flex-col md:flex-row items-center gap-8 ${
+        index % 2 === 1 ? "md:flex-row-reverse" : ""
+      }`}
+    >
+      <div className="flex-1">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-yellow-400">
+          {s.title}
+        </h2>
+        {/* FIXED LIGHT TEXT */}
+        <p className="text-lg text-white leading-relaxed whitespace-pre-line">
+          {s.text}
+        </p>
+      </div>
+      <div className="flex-1 max-w-xs md:max-w-sm">
+        <img
+          src={s.img}
+          className="rounded-xl shadow-2xl w-full cursor-pointer transition-transform duration-500 hover:scale-110 hover:-rotate-1"
+          onClick={() => setSelectedImage(s.img)}
+        />
+      </div>
+    </div>
+  </div>
+))}
+
 
               {/* CLOSE STORY BUTTON */}
               <div className="relative z-10 flex justify-center mt-8">
                 <button
-                  className="px-6 py-2 bg-red-500 text-white font-bold rounded-2xl shadow-lg hover:bg-red-600 transition text-sm md:text-base"
+                  className="px-6 py-2 bg-red-500 dark:bg-red-400 text-white dark:text-gray-900 font-bold rounded-2xl shadow-lg hover:bg-red-600 dark:hover:bg-red-500 transition text-sm md:text-base"
                   onClick={handleCloseStory}
                 >
                   Close Story

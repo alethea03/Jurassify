@@ -24,5 +24,19 @@
   transform: translateY(0) !important;
 }
 
+.sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #0f172a;
+  transition: background 0.2s ease;
+}
+
+.sidebar-btn:hover {
+  background: #1e293b;
+}
 
 

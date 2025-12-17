@@ -88,38 +88,39 @@ export default function HeroSection({ isLoggedIn, username, onMainAction }: Hero
             </nav>
 
             {/* 3. CENTRAL CONTENT */}
-            <div className="relative z-10 mx-auto max-w-6xl px-4">
-                {/* 🦖 MAIN TITLE */}
-                <h1
-                    className="animate-dinoRoar text-8xl leading-none tracking-tighter drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)] md:text-[10rem] lg:text-[12rem]"
-                    style={{
-                        fontFamily: 'DinoHorn',
-                        color: '#39FF14',
-                        textShadow: `
-                            2px 2px 0 #000,
-                            4px 4px 0 #2E8B57,
-                            6px 6px 15px rgba(0,0,0,0.8)
-                        `,
-                    }}
-                >
-                    {title}
-                </h1>
+           <div className="relative z-10 mx-auto flex flex-col items-center justify-center h-full px-4 -translate-y-36">
+  {/* 🦖 MAIN TITLE / PNG */}
+ <div className="animate-dinoRoar w-full flex justify-center -translate-y-4">
+  <img
+    src="/jurassify.png" // PNG in public folder
+    alt="Jurassify"
+    className="object-contain w-full max-w-[1200px] h-auto" // increase max width
+    style={{
+      maxHeight: '95vh', // nearly full viewport height
+    }}
+  />
+</div>
 
-                {/* 🧭 TAGLINE */}
-                <h2 className="mb-16 text-3xl font-bold uppercase tracking-wide text-red-500 sm:text-4xl">
-                    {tagline}
-                </h2>
 
-                {/* 🕰 CTA Button */}
-                <div className="flex justify-center space-x-6">
-                    <button
-                        className={`transform rounded-full bg-gradient-to-r from-green-400 to-teal-400 px-12 py-4 text-xl font-semibold text-gray-900 shadow-lg shadow-teal-400/40 transition duration-300 hover:scale-105 hover:from-green-300 hover:to-teal-300 hover:shadow-2xl active:scale-95 active:shadow-inner`}
-                    onClick={onMainAction}
-                >
-                    {isLoggedIn ? 'Go to Hub' : 'Become a Time Traveler'} 
-                    </button>
-                </div>
-            </div>
+{/* 🧭 TAGLINE + CTA BUTTON */}
+{/* 🧭 TAGLINE + CTA BUTTON */}
+<div className="-translate-y-16 flex flex-col items-center space-y-6">
+  <h2 className="text-3xl font-bold uppercase tracking-wide text-red-500 sm:text-4xl text-center">
+    {tagline}
+  </h2>
+
+  <button
+    className="transform rounded-full bg-gradient-to-r from-green-400 to-teal-400 px-12 py-4 text-xl font-semibold text-gray-900 shadow-lg shadow-teal-400/40 transition duration-300 hover:scale-105 hover:from-green-300 hover:to-teal-300 hover:shadow-2xl active:scale-95 active:shadow-inner translate-y-20"
+    onClick={onMainAction}
+  >
+    {isLoggedIn ? 'Go to Hub' : 'Become a Time Traveler'}
+  </button>
+</div>
+
+
+
+</div>
+
         </header>
     );
 }

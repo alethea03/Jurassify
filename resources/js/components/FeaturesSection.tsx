@@ -7,7 +7,7 @@ import {
     Orbit,
     Star,
     User,
-} from 'lucide-react'; // ✅ imported icons
+} from 'lucide-react';
 import React, { useEffect, useRef } from 'react';
 
 interface Feature {
@@ -89,8 +89,8 @@ const FeaturesSection: React.FC = () => {
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             if (splineRef.current && splineRef.current.setCameraPosition) {
-                const x = (e.clientX / window.innerWidth - 0.5) * 2; // -1 to 1
-                const y = (e.clientY / window.innerHeight - 0.5) * 2; // -1 to 1
+                const x = (e.clientX / window.innerWidth - 0.5) * 2;
+                const y = (e.clientY / window.innerHeight - 0.5) * 2;
                 splineRef.current.setCameraPosition({ x: x * 2, y: y * 2, z: splineRef.current.camera.position.z });
             }
         };
@@ -99,31 +99,28 @@ const FeaturesSection: React.FC = () => {
     }, []);
 
     return (
-        <section id="features-section" className="relative bg-gray-900 py-20 text-white overflow-hidden">
-         {/* Spline 3D Background */}
-<div className="absolute inset-0 z-0 pointer-events-none">
-    <spline-viewer
-        ref={splineRef}
-        url="https://prod.spline.design/gRAacXDSse1nIW-y/scene.splinecode"
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 0,
-          pointerEvents: 'none', // so form inputs work
-    transform: 'scale(1.2)', // zoom in slightly
-    transformOrigin: 'center center',
-        }}
-    ></spline-viewer>
-</div>
-
-
-
+        <section id="features-section" className="relative bg-gray-100 dark:bg-gray-900 py-20 text-gray-900 dark:text-white overflow-hidden">
+            {/* Spline 3D Background */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                <spline-viewer
+                    ref={splineRef}
+                    url="https://prod.spline.design/gRAacXDSse1nIW-y/scene.splinecode"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 0,
+                        pointerEvents: 'none',
+                        transform: 'scale(1.2)',
+                        transformOrigin: 'center center',
+                    }}
+                ></spline-viewer>
+            </div>
 
             <div className="relative z-10 mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-                <h2 className="mb-8 text-5xl font-extrabold tracking-tight text-amber-400 drop-shadow-[0_3px_10px_rgba(255,200,0,0.6)]">
+                <h2 className="mb-8 text-5xl font-extrabold tracking-tight text-amber-600 dark:text-amber-400 drop-shadow-[0_3px_10px_rgba(255,200,0,0.6)]">
                     Jurassify Your Experience
                 </h2>
 
@@ -131,17 +128,17 @@ const FeaturesSection: React.FC = () => {
                     {featureItems.map((item, index) => (
                         <div
                             key={index}
-                            className="transform rounded-2xl border border-gray-700 bg-gray-800/60 p-8 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:scale-105 hover:border-amber-400"
+                            className="transform rounded-2xl border border-gray-300 dark:border-gray-700 bg-gray-200/60 dark:bg-gray-800/60 p-8 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:scale-105 hover:border-amber-400"
                         >
                             <div className="mb-4 flex justify-center">
-                                <div className="transform rounded-full bg-gray-700 p-4 shadow-inner transition duration-300 hover:rotate-6">
+                                <div className="transform rounded-full bg-gray-300 dark:bg-gray-700 p-4 shadow-inner transition duration-300 hover:rotate-6">
                                     {item.icon}
                                 </div>
                             </div>
-                            <h3 className="mb-3 text-2xl font-bold text-amber-300">
+                            <h3 className="mb-3 text-2xl font-bold text-amber-600 dark:text-amber-400">
                                 {item.title}
                             </h3>
-                            <p className="text-sm text-gray-300">
+                            <p className="text-sm text-gray-700 dark:text-gray-300">
                                 {item.description}
                             </p>
                         </div>
