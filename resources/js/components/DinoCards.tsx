@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaHeart, FaRegHeart, FaPencilAlt, FaGripHorizontal, FaTimes, FaAngleDown, FaAngleUp, FaCheck, FaBan } from 'react-icons/fa';
+import { useUser } from '@/hooks/useUser';
 
 interface Dino {
     _id: string;
@@ -30,7 +31,13 @@ const DinoCards: React.FC<DinoCardProps> = ({ dino, onClose, isLoggedIn, favorit
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [currentNote, setCurrentNote] = useState("");
 
-    const isFavorited = false; // placeholder for real logic
+    const { isLoggedIn: isLoggedInHook, toggleFavorite: toggleFavoriteHook, addOrUpdateNote: addOrUpdateNoteHook, isDinoFavorited } = useUser();
+    // Use hook's auth state which updates in real-time after login; fall back to prop if hook undefined
+    const isLoggedInEffective = isLoggedInHook ?? isLoggedIn;
+    const toggleFavFn = toggleFavoriteHook;
+    const updateNoteFn = addOrUpdateNoteHook || addOrUpdateNote;
+
+    const isFavorited = isDinoFavorited ? isDinoFavorited(dino._id) : (favorites ? favorites.some(f => f.dinoId === dino._id) : false);
 
     useEffect(() => {
         setCurrentNote("");
@@ -44,15 +51,15 @@ const DinoCards: React.FC<DinoCardProps> = ({ dino, onClose, isLoggedIn, favorit
     const handleImageClick = () => setIsImageFullscreen(true);
 
     const handleToggleFavorite = () => {
-        if (!isLoggedIn) {
+        if (!isLoggedInEffective) {
             setShowLoginModal(true);
             return;
         }
-        alert("Add/remove favorite logic goes here");
+        if (toggleFavFn) toggleFavFn(dino._id, dino.name, dino.image);
     };
 
     const handleToggleNotesEditor = () => {
-        if (!isLoggedIn) {
+        if (!isLoggedInEffective) {
             setShowLoginModal(true);
             return;
         }
@@ -60,8 +67,10 @@ const DinoCards: React.FC<DinoCardProps> = ({ dino, onClose, isLoggedIn, favorit
     };
 
     const handleSaveNote = () => {
-        if (!isLoggedIn) return;
-        alert(`Save note: ${currentNote}`);
+        if (!isLoggedInEffective) return;
+        if (updateNoteFn) {
+            updateNoteFn({ dinoId: dino._id, dinoName: dino.name, image: dino.image, note: currentNote });
+        }
         setIsEditingNote(false);
     };
 
@@ -200,7 +209,6 @@ const DinoCards: React.FC<DinoCardProps> = ({ dino, onClose, isLoggedIn, favorit
                             {isFavorited ? <FaHeart /> : <FaRegHeart />}
                             {isFavorited ? 'Remove Favorite' : 'Add to Favorites'}
                         </motion.button>
-
                         <motion.button
                             type="button"
                             onClick={handleToggleNotesEditor}
@@ -212,27 +220,6 @@ const DinoCards: React.FC<DinoCardProps> = ({ dino, onClose, isLoggedIn, favorit
                             {isEditingNote ? 'Close Editor' : currentNote ? 'Edit Note' : 'Add Note'}
                         </motion.button>
                     </div>
-
-                    {/* Logged-in Notes */}
-                    {isLoggedIn && favorites && addOrUpdateNote && (
-                        <div className="mt-4">
-                            <h4 className="font-bold mb-1">Your Note:</h4>
-                            <textarea
-                                className="w-full p-2 rounded bg-gray-700 text-white"
-                                value={favorites.find(fav => fav.dinoId === dino._id)?.note || ''}
-                                onChange={(e) => {
-                                    const noteText = e.target.value;
-                                    addOrUpdateNote({
-                                        dinoId: dino._id,
-                                        dinoName: dino.name,
-                                        image: dino.image,
-                                        note: noteText,
-                                    });
-                                }}
-                                placeholder="Add your personal note here..."
-                            />
-                        </div>
-                    )}
                 </div>
             </motion.div>
 
@@ -277,7 +264,7 @@ const DinoCards: React.FC<DinoCardProps> = ({ dino, onClose, isLoggedIn, favorit
 
             {/* Login Modal */}
             <AnimatePresence>
-                {showLoginModal && !isLoggedIn && (
+                {showLoginModal && !isLoggedInEffective && (
                     <motion.div
                         className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 backdrop-blur-sm"
                         initial={{ opacity: 0 }}

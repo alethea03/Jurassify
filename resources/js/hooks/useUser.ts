@@ -33,6 +33,16 @@ const getInitialState = (key: string, defaultValue: any): any => {
     return defaultValue;
 };
 
+// Helper to get registered users from localStorage
+const getRegisteredUsers = (): Record<string, { password: string; name: string; email: string }> => {
+    return getInitialState('jurassifyRegisteredUsers', {});
+};
+
+// Helper to save registered users to localStorage
+const saveRegisteredUsers = (users: Record<string, { password: string; name: string; email: string }>) => {
+    localStorage.setItem('jurassifyRegisteredUsers', JSON.stringify(users));
+};
+
 // --- MAIN HOOK LOGIC ---
 
 export const useUser = () => {
@@ -54,17 +64,70 @@ export const useUser = () => {
     }, [user, favorites]);
 
 
-    // 3. AUTHENTICATION FUNCTIONS (Mock Login)
-    const login = useCallback((username: string) => {
-        if (username === 'rootuser' || username === 'user1234') {
-            setUser({
-                id: Math.random(),
-                name: username === 'rootuser' ? 'Admin User' : 'Time Traveler',
-                email: `${username}@jurassify.com`,
-                username: username,
-            });return true;
+    // 3. AUTHENTICATION FUNCTIONS (Register & Login)
+    const register = useCallback((username: string, password: string, name?: string) => {
+        const registeredUsers = getRegisteredUsers();
+
+        // Basic validation: alphanumeric, dashes/underscores, 3-30 chars
+        const usernameValid = /^[a-zA-Z0-9_-]{3,30}$/.test(username);
+        if (!usernameValid) {
+            console.warn('Invalid username format');
+            return false;
         }
-        return false;
+
+        // Password minimum length
+        if (!password || password.length < 6) {
+            console.warn('Password too short');
+            return false;
+        }
+
+        // Check if username already exists
+        if (registeredUsers[username]) {
+            console.warn('Username already registered');
+            return false;
+        }
+
+        // Register new user
+        registeredUsers[username] = {
+            password,
+            name: name || username,
+            email: `${username}@jurassify.com`,
+        };
+        saveRegisteredUsers(registeredUsers);
+        console.log('User registered successfully:', username);
+        return true;
+    }, []);
+    
+    const login = useCallback((username: string, password: string) => {
+        const registeredUsers = getRegisteredUsers();
+        const user = registeredUsers[username];
+
+        // Basic validation
+        const usernameValid = /^[a-zA-Z0-9_-]{3,30}$/.test(username);
+        if (!usernameValid) {
+            console.warn('Invalid username format');
+            return false;
+        }
+        if (!password || password.length < 3) {
+            console.warn('Password too short');
+            return false;
+        }
+
+        // Check if user exists and password matches
+        if (!user || user.password !== password) {
+            console.warn('Invalid username or password');
+            return false;
+        }
+
+        // Set logged-in user
+        setUser({
+            id: Math.random(),
+            name: user.name,
+            email: user.email,
+            username: username,
+        });
+        console.log('Login successful:', username);
+        return true;
     }, []);
     
     const logout = useCallback(() => {
@@ -147,11 +210,12 @@ export const useUser = () => {
         updateNote,
         removeFavorite,
         // Auth Functions
+        register,
         login,
         logout,
     }), [
         user, isLoggedIn, favorites, 
         isDinoFavorited, toggleFavorite, addOrUpdateNote, 
-        updateNote, removeFavorite, login, logout
+        updateNote, removeFavorite, register, login, logout
     ]);
 };

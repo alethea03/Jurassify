@@ -7,11 +7,25 @@ const VIDEO_PATH = 'dinosaur intro.mp4';
 
 interface HeroSectionProps {
     isLoggedIn: boolean;
-    username: string | undefined;
     onMainAction: () => void;
 }
 
-export default function HeroSection({ isLoggedIn, username, onMainAction }: HeroSectionProps) {
+
+
+// ImageCTA component with fallback
+function ImageCTA({ onMainAction, isLoggedIn }: { onMainAction: () => void; isLoggedIn: boolean }) {
+    return (
+        <img
+            src="/button.png"
+            alt={isLoggedIn ? 'Go to Hub' : 'Become a Traveler'}
+            onClick={onMainAction}
+            className="cursor-pointer object-contain w-48 sm:w-64 md:w-[400px] lg:w-[500px] xl:w-[600px] -translate-y-4 transition-transform duration-300 hover:scale-105 hover:drop-shadow-[0_0_10px_#FFD700]"
+        />
+    );
+}
+
+export default function HeroSection({ isLoggedIn, onMainAction }: HeroSectionProps) {
+
     const groupName = 'THE ARK COLLECTIVE';
     const title = 'JURASSIFY';
     const tagline = 'Your Virtual Time Machine to Prehistoric Life.';
@@ -88,36 +102,28 @@ export default function HeroSection({ isLoggedIn, username, onMainAction }: Hero
             </nav>
 
             {/* 3. CENTRAL CONTENT */}
-           <div className="relative z-10 mx-auto flex flex-col items-center justify-center h-full px-4 -translate-y-36">
+           <div className="relative z-10 mx-auto flex flex-col items-center justify-center h-full px-4 -translate-y-20">
   {/* 🦖 MAIN TITLE / PNG */}
  <div className="animate-dinoRoar w-full flex justify-center -translate-y-4">
   <img
-    src="/jurassify.png" // PNG in public folder
+    src="/jurassify.png"
     alt="Jurassify"
-    className="object-contain w-full max-w-[1200px] h-auto" // increase max width
+    className="object-contain w-full max-w-[1200px] h-auto"
     style={{
-      maxHeight: '95vh', // nearly full viewport height
+      maxHeight: '60vh',
     }}
   />
 </div>
 
-
 {/* 🧭 TAGLINE + CTA BUTTON */}
-{/* 🧭 TAGLINE + CTA BUTTON */}
-<div className="-translate-y-16 flex flex-col items-center space-y-6">
+<div className="-translate-y-8 flex flex-col items-center space-y-6">
   <h2 className="text-3xl font-bold uppercase tracking-wide text-red-500 sm:text-4xl text-center">
     {tagline}
   </h2>
 
-  <button
-    className="transform rounded-full bg-gradient-to-r from-green-400 to-teal-400 px-12 py-4 text-xl font-semibold text-gray-900 shadow-lg shadow-teal-400/40 transition duration-300 hover:scale-105 hover:from-green-300 hover:to-teal-300 hover:shadow-2xl active:scale-95 active:shadow-inner translate-y-20"
-    onClick={onMainAction}
-  >
-    {isLoggedIn ? 'Go to Hub' : 'Become a Time Traveler'}
-  </button>
+  {/* Clickable button PNG */}
+  <ImageCTA onMainAction={onMainAction} isLoggedIn={isLoggedIn} />
 </div>
-
-
 
 </div>
 

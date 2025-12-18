@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppShell } from './app-shell';
+import AppShell from './app-shell';
 import { AppContent } from './app-content';
 import StickyHeader from '@/components/StickyHeader';
 import SignupModal from '@/components/SignupModal';

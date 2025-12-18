@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaHeart, FaCog, FaSignOutAlt, FaTimes, FaStickyNote, FaTrashAlt } from 'react-icons/fa';
 import { useUser, UserFavorite } from '@/hooks/useUser'; // Must import UserFavorite type
+import { Link } from '@inertiajs/react';
 
 // --- CONTENT VIEWS: Note Editor ---
 
 // Sub-component for displaying/editing a single note
-const NoteEditor: React.FC<{ favorite: UserFavorite, setView: (view: string) => void }> = ({ favorite, setView }) => {
+const NoteEditor: React.FC<{ favorite: UserFavorite, setView: () => void }> = ({ favorite, setView }) => {
     const { updateNote, removeFavorite } = useUser();
     const [note, setNote] = useState(favorite.note);
     const [isEditing, setIsEditing] = useState(false);
@@ -19,7 +20,7 @@ const NoteEditor: React.FC<{ favorite: UserFavorite, setView: (view: string) => 
     const handleRemove = () => {
         if(confirm(`Are you sure you want to remove ${favorite.dinoName} from your favorites?`)) {
             removeFavorite(favorite.dinoId);
-            setView('Favorites'); // Go back to the list
+            setView(); // Go back to the list
         }
     };
 
@@ -111,6 +112,57 @@ const FavoritesView: React.FC<{ favorites: UserFavorite[] }> = ({ favorites }) =
 };
 
 
+// --- CONTENT VIEWS: Notes List (shows only favorites that have notes)
+const NotesView: React.FC<{ favorites: UserFavorite[] }> = ({ favorites }) => {
+    const [selectedFavorite, setSelectedFavorite] = useState<UserFavorite | null>(null);
+    const notes = favorites.filter(f => f.note && f.note.trim().length > 0);
+
+    if (selectedFavorite) {
+        return <NoteEditor favorite={selectedFavorite} setView={() => setSelectedFavorite(null)} />;
+    }
+
+    return (
+        <div className="space-y-3">
+            <h4 className="text-xl font-bold text-white mb-3 border-b border-gray-700 pb-2">Your Notes</h4>
+            {notes.length === 0 ? (
+                <p className="text-slate-400 italic p-4 text-center">You have no notes yet. Add notes to your favorites!</p>
+            ) : (
+                notes.map(fav => (
+                    <div
+                        key={fav.dinoId}
+                        className="flex justify-between items-center p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors"
+                        onClick={() => setSelectedFavorite(fav)}
+                    >
+                        <div>
+                            <div className="text-white font-medium">{fav.dinoName}</div>
+                            <div className="text-slate-400 text-sm truncate w-64">{fav.note}</div>
+                        </div>
+                        <button className="text-sm text-yellow-400 hover:text-yellow-300 flex items-center">
+                            Edit <FaStickyNote className="inline ml-2" />
+                        </button>
+                    </div>
+                ))
+            )}
+        </div>
+    );
+};
+
+// --- SETTINGS VIEW ---
+const SettingsView: React.FC = () => {
+    return (
+        <div className="space-y-4">
+            <h4 className="text-xl font-bold text-white mb-2">Account Settings</h4>
+            <div className="grid gap-2">
+                <Link href="/settings/profile" className="p-3 bg-gray-800 rounded hover:bg-gray-700 text-white">Profile</Link>
+                <Link href="/settings/password" className="p-3 bg-gray-800 rounded hover:bg-gray-700 text-white">Password</Link>
+                <Link href="/settings/appearance" className="p-3 bg-gray-800 rounded hover:bg-gray-700 text-white">Appearance</Link>
+                <Link href="/settings/two-factor" className="p-3 bg-gray-800 rounded hover:bg-gray-700 text-white">Two-Factor Auth</Link>
+            </div>
+        </div>
+    );
+};
+
+
 // --- MAIN SIDEBAR COMPONENT (The Pop-up) ---
 
 interface DashboardSidebarProps {
@@ -125,15 +177,35 @@ export default function DashboardSidebar({ isOpen, onClose, setViewMode, onLogou
     
     // State to manage the active content view (Favorites, Settings)
     const [activeView, setActiveView] = useState('Favorites');
+    
+    // Debug: Log favorites on mount and when they change
+    React.useEffect(() => {
+        console.log('=== DashboardSidebar Debug ===');
+        console.log('activeView:', activeView);
+        console.log('favorites:', favorites);
+        console.log('=============================');
+    }, [activeView, favorites]);
 
     const renderContent = () => {
-        switch (activeView) {
-            case 'Favorites':
-                return <FavoritesView favorites={favorites} />;
-            case 'Settings':
-                return <p className="p-4 text-slate-300">User settings and profile management coming soon!</p>;
-            default:
-                return <p className="p-4 text-slate-300">Welcome, {user?.username}.</p>;
+        try {
+            switch (activeView) {
+                case 'Favorites':
+                    return <FavoritesView favorites={favorites} />;
+                case 'Notes':
+                    return <NotesView favorites={favorites} />;
+                case 'Settings':
+                    return <SettingsView />;
+                default:
+                    return <p className="p-4 text-slate-300">Welcome, {user?.username}.</p>;
+            }
+        } catch (err) {
+            console.error('Error rendering DashboardSidebar content:', err);
+            return (
+                <div className="p-4 bg-red-900 text-red-100 rounded">
+                    <strong>Rendering error</strong>
+                    <div className="mt-2 text-sm">An error occurred while rendering this view. Check the console for details.</div>
+                </div>
+            );
         }
     };
     
@@ -183,7 +255,7 @@ export default function DashboardSidebar({ isOpen, onClose, setViewMode, onLogou
                             
                             <nav className="p-2 space-y-2">
                                 {/* Menu Items */}
-                                {[{ name: 'Favorites', icon: FaHeart }, { name: 'Settings', icon: FaCog }].map(({ name, icon: Icon }) => (
+                                {[{ name: 'Favorites', icon: FaHeart }, { name: 'Notes', icon: FaStickyNote }, { name: 'Settings', icon: FaCog }].map(({ name, icon: Icon }) => (
                                     <button
                                         key={name}
                                         onClick={() => setActiveView(name)}
